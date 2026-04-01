@@ -1,6 +1,12 @@
 "use client";
 
-import { instance, type RenderError, type Viz } from "@viz-js/viz";
+import {
+  instance,
+  type Attributes,
+  type Graph,
+  type RenderError,
+  type Viz,
+} from "@viz-js/viz";
 import { useDeferredValue, useEffect, useState } from "react";
 import { DEFAULT_SKILL_FLOW_DOT, parseSkillFlowDot } from "@/lib/skill-flow";
 
@@ -24,31 +30,109 @@ const GRAPHVIZ_OPTIONS = {
   engine: "dot" as const,
   graphAttributes: {
     bgcolor: "transparent",
-    pad: "0.35",
-    nodesep: "0.42",
-    ranksep: "0.68",
+    pad: "0.4",
+    nodesep: "0.4",
+    ranksep: "0.72",
     splines: "polyline",
-  },
-  nodeAttributes: {
-    color: "#241914",
-    fillcolor: "#fff5e8",
-    fontcolor: "#1d1512",
-    fontname:
-      "Avenir Next, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif",
-    penwidth: "1.55",
-    margin: "0.22,0.16",
-    style: "rounded,filled",
-  },
-  edgeAttributes: {
-    color: "#8a5d38",
-    fontcolor: "#744521",
-    fontname:
-      "SFMono-Regular, SF Mono, JetBrains Mono, Menlo, Consolas, monospace",
-    fontsize: "11",
-    arrowsize: "0.82",
-    penwidth: "1.3",
+    rankdir: "TB",
   },
 };
+
+function getNodeTheme(shape: string): Attributes {
+  if (shape === "diamond") {
+    return {
+      shape: "diamond",
+      style: "filled",
+      color: "#ca8a04",
+      fillcolor: "#fefce8",
+      fontcolor: "#1e293b",
+      penwidth: "2",
+      margin: "0.18,0.14",
+    };
+  }
+
+  if (shape === "doublecircle") {
+    return {
+      shape: "box",
+      style: "rounded,filled",
+      color: "#2563eb",
+      fillcolor: "#eff6ff",
+      fontcolor: "#1e293b",
+      peripheries: 2,
+      penwidth: "2.4",
+      margin: "0.24,0.17",
+    };
+  }
+
+  return {
+    shape: "box",
+    style: "rounded,filled",
+    color: "#16a34a",
+    fillcolor: "#f0fdf4",
+    fontcolor: "#1e293b",
+    penwidth: "2",
+    margin: "0.22,0.16",
+  };
+}
+
+function buildStyledGraph(source: string): string | Graph {
+  const parsed = parseSkillFlowDot(source);
+
+  if (parsed.issues.length > 0) {
+    return source;
+  }
+
+  return {
+    name: parsed.name,
+    directed: true,
+    graphAttributes: {
+      bgcolor: "transparent",
+      rankdir: "TB",
+      pad: "0.38",
+      nodesep: "0.4",
+      ranksep: "0.72",
+      splines: "polyline",
+    },
+    edgeAttributes: {
+      color: "#64748b",
+      fontcolor: "#dc2626",
+      fontname:
+        "SFMono-Regular, SF Mono, JetBrains Mono, Menlo, Consolas, monospace",
+      fontsize: "11",
+      arrowsize: "0.78",
+      penwidth: "2",
+      labelfloat: true,
+    },
+    nodes: parsed.nodes.map((node) => {
+      const nodeTheme = getNodeTheme(node.shape);
+
+      return {
+        name: node.id,
+        attributes: {
+          label: node.attrs.label ?? node.id,
+          fontname:
+            "Avenir Next, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif",
+          fontsize: "12",
+          ...nodeTheme,
+        },
+      };
+    }),
+    edges: parsed.edges.map((edge) =>
+      edge.label
+        ? {
+            tail: edge.from,
+            head: edge.to,
+            attributes: {
+              label: edge.label,
+            },
+          }
+        : {
+            tail: edge.from,
+            head: edge.to,
+          },
+    ),
+  };
+}
 
 let vizPromise: Promise<Viz> | null = null;
 
@@ -84,6 +168,7 @@ export default function SkillFlowStudio({
 
   useEffect(() => {
     let cancelled = false;
+    const renderInput = buildStyledGraph(deferredSource);
 
     if (!deferredSource.trim()) {
       return () => {
@@ -99,7 +184,7 @@ export default function SkillFlowStudio({
 
         setGraphvizVersion(viz.graphvizVersion);
 
-        const result = viz.render(deferredSource, {
+        const finalResult = viz.render(renderInput, {
           format: "svg",
           ...GRAPHVIZ_OPTIONS,
         });
@@ -108,11 +193,11 @@ export default function SkillFlowStudio({
           return;
         }
 
-        if (result.status === "success") {
+        if (finalResult.status === "success") {
           setRenderState({
             status: "success",
-            svg: result.output,
-            errors: result.errors,
+            svg: finalResult.output,
+            errors: finalResult.errors,
           });
           setLastRenderedSource(deferredSource);
           return;
@@ -121,7 +206,7 @@ export default function SkillFlowStudio({
         setRenderState({
           status: "failure",
           svg: "",
-          errors: result.errors,
+          errors: finalResult.errors,
         });
         setLastRenderedSource(deferredSource);
       })
@@ -194,32 +279,32 @@ export default function SkillFlowStudio({
     Boolean(effectiveRenderState.svg);
 
   return (
-    <main className="min-h-screen px-4 py-4 sm:px-6 lg:px-8">
-      <div className="mx-auto flex min-h-[calc(100vh-2rem)] max-w-[1680px] flex-col gap-5">
-        <section className="overflow-hidden rounded-[30px] border border-[var(--line)] bg-[var(--panel)] shadow-[0_20px_80px_rgba(46,30,16,0.08)] backdrop-blur">
-          <div className="grid gap-8 px-6 py-7 lg:grid-cols-[1.15fr_0.85fr] lg:px-8">
-            <div className="space-y-5">
-              <div className="inline-flex items-center rounded-full border border-[var(--line-strong)] bg-white/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.34em] text-[var(--muted-strong)]">
-                Dot Parser Playground
+    <main className="min-h-screen bg-[var(--background)] px-3 py-3 sm:px-4 lg:px-6">
+      <div className="mx-auto flex min-h-[calc(100vh-1.5rem)] max-w-[1600px] flex-col gap-4">
+        <section className="overflow-hidden rounded-[22px] border border-[var(--line)] bg-[var(--panel)] shadow-[0_10px_28px_rgba(15,23,42,0.06)]">
+          <div className="grid gap-6 px-5 py-5 lg:grid-cols-[1.05fr_0.95fr] lg:px-6">
+            <div className="space-y-4">
+              <div className="inline-flex items-center rounded-full border border-[var(--line)] bg-[var(--background-soft)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-[var(--muted-strong)]">
+                skill_flow parser
               </div>
               <div className="space-y-4">
-                <h1 className="max-w-4xl font-[family:var(--font-display)] text-4xl leading-none tracking-[-0.04em] text-[var(--foreground)] sm:text-5xl lg:text-6xl">
-                  把 Agent 流程文本，
-                  <span className="block text-[var(--accent)]">直接压成一张可读的图。</span>
+                <h1 className="max-w-4xl text-3xl font-bold leading-tight tracking-[-0.03em] text-[var(--foreground)] sm:text-4xl">
+                  skill_flow
+                  <span className="mx-2 text-[var(--muted)]">—</span>
+                  DOT 流程图可视化
                 </h1>
-                <p className="max-w-2xl text-sm leading-7 text-[var(--muted)] sm:text-base">
-                  左侧输入 DOT / Graphviz 文本，右侧实时得到 SVG 流程图。页面同时给出节点统计、层级摘要，以及语句级错误和 Graphviz
-                  渲染反馈。
+                <p className="max-w-2xl text-sm leading-7 text-[var(--muted)]">
+                  维持 Graphviz 自动布局，但把视觉风格切到更接近你给的示例：浅灰背景、白色画布、蓝色终态、绿色操作、黄色判断、红色边标签。
                 </p>
               </div>
               <div className="flex flex-wrap gap-3 text-xs text-[var(--muted-strong)]">
-                <span className="rounded-full border border-[var(--line)] bg-white/70 px-3 py-1.5">
+                <span className="rounded-full border border-[var(--line)] bg-[var(--background-soft)] px-3 py-1.5">
                   `digraph`
                 </span>
-                <span className="rounded-full border border-[var(--line)] bg-white/70 px-3 py-1.5">
+                <span className="rounded-full border border-[var(--line)] bg-[var(--background-soft)] px-3 py-1.5">
                   `shape=diamond|box|doublecircle`
                 </span>
-                <span className="rounded-full border border-[var(--line)] bg-white/70 px-3 py-1.5">
+                <span className="rounded-full border border-[var(--line)] bg-[var(--background-soft)] px-3 py-1.5">
                   `label=&quot;是 / 否&quot;`
                 </span>
               </div>
@@ -228,7 +313,7 @@ export default function SkillFlowStudio({
               {metricCards.map((card) => (
                 <article
                   key={card.label}
-                  className="rounded-[22px] border border-[var(--line)] bg-white/70 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]"
+                  className="rounded-[16px] border border-[var(--line)] bg-[var(--background-soft)] p-4"
                 >
                   <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">
                     {card.label}
@@ -245,8 +330,8 @@ export default function SkillFlowStudio({
           </div>
         </section>
 
-        <section className="grid flex-1 gap-5 lg:grid-cols-[minmax(380px,0.9fr)_minmax(420px,1.1fr)]">
-          <article className="flex min-h-[720px] flex-col overflow-hidden rounded-[30px] border border-[var(--line)] bg-[var(--panel-strong)] shadow-[0_12px_48px_rgba(41,28,15,0.08)]">
+        <section className="grid flex-1 gap-4 lg:grid-cols-[minmax(380px,0.92fr)_minmax(420px,1.08fr)]">
+          <article className="flex min-h-[720px] flex-col overflow-hidden rounded-[22px] border border-[var(--line)] bg-[var(--panel)] shadow-[0_10px_28px_rgba(15,23,42,0.06)]">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] px-5 py-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
@@ -260,14 +345,14 @@ export default function SkillFlowStudio({
                 <button
                   type="button"
                   onClick={() => setSource(DEFAULT_SKILL_FLOW_DOT)}
-                  className="rounded-full border border-[var(--line-strong)] px-4 py-2 text-sm font-medium text-[var(--foreground)] transition hover:bg-white/80"
+                  className="rounded-full border border-[var(--line)] bg-[var(--background-soft)] px-4 py-2 text-sm font-medium text-[var(--foreground)] transition hover:bg-white"
                 >
                   载入示例
                 </button>
                 <button
                   type="button"
                   onClick={() => setSource("")}
-                  className="rounded-full border border-transparent bg-[var(--foreground)] px-4 py-2 text-sm font-medium text-[var(--background-soft)] transition hover:opacity-90"
+                  className="rounded-full border border-[#2563eb] bg-[#2563eb] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#1d4ed8]"
                 >
                   清空
                 </button>
@@ -279,13 +364,13 @@ export default function SkillFlowStudio({
                 value={source}
                 onChange={(event) => setSource(event.target.value)}
                 spellCheck={false}
-                className="h-full min-h-[420px] w-full resize-none rounded-[24px] border border-[var(--line)] bg-[#1a1512] px-4 py-4 font-mono text-[13px] leading-6 text-[#f8efe2] outline-none transition placeholder:text-[#8c7866] focus:border-[var(--accent)]"
+                className="h-full min-h-[420px] w-full resize-none rounded-[16px] border border-[var(--line)] bg-[#ffffff] px-4 py-4 font-mono text-[13px] leading-6 text-[#334155] outline-none transition placeholder:text-[#94a3b8] focus:border-[#2563eb] focus:ring-2 focus:ring-[#bfdbfe]"
                 placeholder={`digraph skill_flow {\n  "开始" [shape=doublecircle];\n  "判断" [shape=diamond];\n  "开始" -> "判断" [label="继续"];\n}`}
               />
             </div>
 
             <div className="grid gap-4 border-t border-[var(--line)] px-5 py-4 md:grid-cols-2">
-              <div className="rounded-[22px] border border-[var(--line)] bg-white/70 p-4">
+              <div className="rounded-[16px] border border-[var(--line)] bg-[var(--background-soft)] p-4">
                 <p className="text-xs uppercase tracking-[0.24em] text-[var(--muted)]">
                   解析摘要
                 </p>
@@ -298,7 +383,7 @@ export default function SkillFlowStudio({
                   {shapeSummary || "暂无 shape 信息"}。
                 </p>
               </div>
-              <div className="rounded-[22px] border border-[var(--line)] bg-white/70 p-4">
+              <div className="rounded-[16px] border border-[var(--line)] bg-[var(--background-soft)] p-4">
                 <p className="text-xs uppercase tracking-[0.24em] text-[var(--muted)]">
                   节点脉络
                 </p>
@@ -312,7 +397,7 @@ export default function SkillFlowStudio({
             </div>
           </article>
 
-          <article className="flex min-h-[720px] flex-col overflow-hidden rounded-[30px] border border-[var(--line)] bg-[var(--panel)] shadow-[0_12px_48px_rgba(41,28,15,0.08)]">
+          <article className="flex min-h-[720px] flex-col overflow-hidden rounded-[22px] border border-[var(--line)] bg-[var(--panel)] shadow-[0_10px_28px_rgba(15,23,42,0.06)]">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] px-5 py-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
@@ -323,27 +408,27 @@ export default function SkillFlowStudio({
                 </h2>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-[var(--line)] bg-white/75 px-3 py-1.5 text-xs font-medium text-[var(--muted-strong)]">
+                <span className="rounded-full border border-[var(--line)] bg-[var(--background-soft)] px-3 py-1.5 text-xs font-medium text-[var(--muted-strong)]">
                   {renderStatus}
                 </span>
                 <button
                   type="button"
                   onClick={() => setZoom((current) => Math.max(0.5, current - 0.1))}
-                  className="rounded-full border border-[var(--line-strong)] px-3 py-1.5 text-sm font-medium text-[var(--foreground)] transition hover:bg-white/80"
+                  className="rounded-full border border-[var(--line)] bg-[var(--background-soft)] px-3 py-1.5 text-sm font-medium text-[var(--foreground)] transition hover:bg-white"
                 >
                   -
                 </button>
                 <button
                   type="button"
                   onClick={() => setZoom(1)}
-                  className="rounded-full border border-[var(--line-strong)] px-3 py-1.5 text-sm font-medium text-[var(--foreground)] transition hover:bg-white/80"
+                  className="rounded-full border border-[var(--line)] bg-[var(--background-soft)] px-3 py-1.5 text-sm font-medium text-[var(--foreground)] transition hover:bg-white"
                 >
                   {Math.round(zoom * 100)}%
                 </button>
                 <button
                   type="button"
                   onClick={() => setZoom((current) => Math.min(2.4, current + 0.1))}
-                  className="rounded-full border border-[var(--line-strong)] px-3 py-1.5 text-sm font-medium text-[var(--foreground)] transition hover:bg-white/80"
+                  className="rounded-full border border-[var(--line)] bg-[var(--background-soft)] px-3 py-1.5 text-sm font-medium text-[var(--foreground)] transition hover:bg-white"
                 >
                   +
                 </button>
@@ -365,7 +450,7 @@ export default function SkillFlowStudio({
                     link.click();
                     URL.revokeObjectURL(url);
                   }}
-                  className="rounded-full border border-transparent bg-[var(--accent)] px-4 py-1.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[var(--line-strong)]"
+                  className="rounded-full border border-[#2563eb] bg-[#2563eb] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:border-[var(--line)] disabled:bg-[var(--line)]"
                 >
                   下载 SVG
                 </button>
@@ -373,7 +458,7 @@ export default function SkillFlowStudio({
             </div>
 
             <div className="flex-1 p-4">
-              <div className="flex h-full min-h-[420px] flex-col overflow-hidden rounded-[26px] border border-[var(--line)] bg-[var(--preview)]">
+              <div className="flex h-full min-h-[420px] flex-col overflow-hidden rounded-[16px] border border-[var(--line)] bg-[var(--preview)] shadow-[0_6px_18px_rgba(15,23,42,0.04)]">
                 <div className="border-b border-[var(--line)] px-4 py-3 text-xs tracking-[0.22em] text-[var(--muted)] uppercase">
                   graphviz / dot engine
                 </div>
@@ -406,11 +491,14 @@ export default function SkillFlowStudio({
                     </div>
                   )}
                 </div>
+                <div className="border-t border-[var(--line)] px-4 py-2 text-center text-xs text-[var(--muted)]">
+                  基于 DOT (Graphviz) 源码渲染
+                </div>
               </div>
             </div>
 
             <div className="grid gap-4 border-t border-[var(--line)] px-5 py-4 md:grid-cols-2">
-              <div className="rounded-[22px] border border-[var(--line)] bg-white/70 p-4">
+              <div className="rounded-[16px] border border-[var(--line)] bg-[var(--background-soft)] p-4">
                 <p className="text-xs uppercase tracking-[0.24em] text-[var(--muted)]">
                   解析器提示
                 </p>
@@ -431,7 +519,7 @@ export default function SkillFlowStudio({
                   )}
                 </div>
               </div>
-              <div className="rounded-[22px] border border-[var(--line)] bg-white/70 p-4">
+              <div className="rounded-[16px] border border-[var(--line)] bg-[var(--background-soft)] p-4">
                 <p className="text-xs uppercase tracking-[0.24em] text-[var(--muted)]">
                   Graphviz 反馈
                 </p>

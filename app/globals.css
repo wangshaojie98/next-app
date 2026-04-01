@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #efe2cd;
-  --background-soft: #fffaf1;
-  --foreground: #1f1613;
-  --muted: #7b6655;
-  --muted-strong: #5f4d3d;
-  --accent: #d86137;
-  --panel: rgba(255, 248, 239, 0.76);
-  --panel-strong: rgba(255, 250, 245, 0.88);
-  --preview: #f6ecde;
-  --line: rgba(82, 58, 35, 0.14);
-  --line-strong: rgba(82, 58, 35, 0.28);
-  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
-    "Noto Serif SC", serif;
+  --background: #f8fafc;
+  --background-soft: #ffffff;
+  --foreground: #334155;
+  --muted: #64748b;
+  --muted-strong: #475569;
+  --accent: #2563eb;
+  --panel: rgba(255, 255, 255, 0.92);
+  --panel-strong: rgba(255, 255, 255, 0.96);
+  --preview: #ffffff;
+  --line: #e2e8f0;
+  --line-strong: #cbd5e1;
+  --font-display: "Avenir Next", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
   --font-sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", sans-serif;
   --font-mono: "SFMono-Regular", "SF Mono", "JetBrains Mono", Menlo, Consolas,
@@ -35,24 +35,23 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  background-image:
-    radial-gradient(circle at top left, rgba(255, 255, 255, 0.7), transparent 32%),
-    radial-gradient(circle at top right, rgba(216, 97, 55, 0.16), transparent 22%),
-    linear-gradient(180deg, rgba(255, 250, 245, 0.78), rgba(239, 226, 205, 0.82));
 }
 
 ::selection {
-  background: rgba(216, 97, 55, 0.24);
+  background: rgba(37, 99, 235, 0.16);
 }
 
 .graphviz-stage svg {
   display: block;
   width: max-content;
   height: auto;
+  min-width: 650px;
   overflow: visible;
 }
 
-.graphviz-stage text {
+.graphviz-stage .node text {
+  fill: #1e293b;
+  font-weight: 600;
   letter-spacing: 0.01em;
 }
 
@@ -60,11 +59,20 @@ body {
 .graphviz-stage .node path,
 .graphviz-stage .node ellipse,
 .graphviz-stage .node rect {
-  filter: drop-shadow(0 8px 20px rgba(44, 26, 12, 0.08));
+  filter: drop-shadow(0 8px 18px rgba(15, 23, 42, 0.08));
 }
 
 .graphviz-stage .edge path {
   stroke-linecap: round;
+}
+
+.graphviz-stage .edge text {
+  fill: #dc2626;
+  font-weight: 700;
+  paint-order: stroke fill;
+  stroke: #ffffff;
+  stroke-width: 6px;
+  stroke-linejoin: round;
 }
 
 .graphviz-stage .edge polygon {

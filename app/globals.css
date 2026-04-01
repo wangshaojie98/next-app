@@ -1,26 +1,72 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #efe2cd;
+  --background-soft: #fffaf1;
+  --foreground: #1f1613;
+  --muted: #7b6655;
+  --muted-strong: #5f4d3d;
+  --accent: #d86137;
+  --panel: rgba(255, 248, 239, 0.76);
+  --panel-strong: rgba(255, 250, 245, 0.88);
+  --preview: #f6ecde;
+  --line: rgba(82, 58, 35, 0.14);
+  --line-strong: rgba(82, 58, 35, 0.28);
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+    "Noto Serif SC", serif;
+  --font-sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+  --font-mono: "SFMono-Regular", "SF Mono", "JetBrains Mono", Menlo, Consolas,
+    monospace;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  min-height: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  background-image:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.7), transparent 32%),
+    radial-gradient(circle at top right, rgba(216, 97, 55, 0.16), transparent 22%),
+    linear-gradient(180deg, rgba(255, 250, 245, 0.78), rgba(239, 226, 205, 0.82));
+}
+
+::selection {
+  background: rgba(216, 97, 55, 0.24);
+}
+
+.graphviz-stage svg {
+  display: block;
+  width: max-content;
+  height: auto;
+  overflow: visible;
+}
+
+.graphviz-stage text {
+  letter-spacing: 0.01em;
+}
+
+.graphviz-stage .node polygon,
+.graphviz-stage .node path,
+.graphviz-stage .node ellipse,
+.graphviz-stage .node rect {
+  filter: drop-shadow(0 8px 20px rgba(44, 26, 12, 0.08));
+}
+
+.graphviz-stage .edge path {
+  stroke-linecap: round;
+}
+
+.graphviz-stage .edge polygon {
+  stroke: none;
 }

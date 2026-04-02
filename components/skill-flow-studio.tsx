@@ -43,9 +43,9 @@ function getNodeTheme(shape: string): Attributes {
     return {
       shape: "diamond",
       style: "filled",
-      color: "#ca8a04",
-      fillcolor: "#fefce8",
-      fontcolor: "#1e293b",
+      color: "#a0522d",
+      fillcolor: "#fdf6f0",
+      fontcolor: "#3c3836",
       penwidth: "2",
       margin: "0.18,0.14",
     };
@@ -55,9 +55,9 @@ function getNodeTheme(shape: string): Attributes {
     return {
       shape: "box",
       style: "rounded,filled",
-      color: "#2563eb",
-      fillcolor: "#eff6ff",
-      fontcolor: "#1e293b",
+      color: "#6b5b3e",
+      fillcolor: "#f7f4ee",
+      fontcolor: "#3c3836",
       peripheries: 2,
       penwidth: "2.4",
       margin: "0.24,0.17",
@@ -67,9 +67,9 @@ function getNodeTheme(shape: string): Attributes {
   return {
     shape: "box",
     style: "rounded,filled",
-    color: "#16a34a",
-    fillcolor: "#f0fdf4",
-    fontcolor: "#1e293b",
+    color: "#b8860b",
+    fillcolor: "#faf5eb",
+    fontcolor: "#3c3836",
     penwidth: "2",
     margin: "0.22,0.16",
   };
@@ -94,8 +94,8 @@ function buildStyledGraph(source: string): string | Graph {
       splines: "polyline",
     },
     edgeAttributes: {
-      color: "#64748b",
-      fontcolor: "#dc2626",
+      color: "#8b7e6a",
+      fontcolor: "#a0522d",
       fontname:
         "SFMono-Regular, SF Mono, JetBrains Mono, Menlo, Consolas, monospace",
       fontsize: "11",

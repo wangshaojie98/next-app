@@ -352,7 +352,7 @@ export default function SkillFlowStudio({
                 <button
                   type="button"
                   onClick={() => setSource("")}
-                  className="rounded-full border border-[#2563eb] bg-[#2563eb] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#1d4ed8]"
+                  className="rounded-full border border-[#b8860b] bg-[#b8860b] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#9a7209]"
                 >
                   清空
                 </button>
@@ -364,7 +364,7 @@ export default function SkillFlowStudio({
                 value={source}
                 onChange={(event) => setSource(event.target.value)}
                 spellCheck={false}
-                className="h-full min-h-[420px] w-full resize-none rounded-[16px] border border-[var(--line)] bg-[#ffffff] px-4 py-4 font-mono text-[13px] leading-6 text-[#334155] outline-none transition placeholder:text-[#94a3b8] focus:border-[#2563eb] focus:ring-2 focus:ring-[#bfdbfe]"
+                className="h-full min-h-[420px] w-full resize-none rounded-[16px] border border-[var(--line)] bg-[#ffffff] px-4 py-4 font-mono text-[13px] leading-6 text-[var(--foreground)] outline-none transition placeholder:text-[#b0a898] focus:border-[#b8860b] focus:ring-2 focus:ring-[#e8d5a8]"
                 placeholder={`digraph skill_flow {\n  "开始" [shape=doublecircle];\n  "判断" [shape=diamond];\n  "开始" -> "判断" [label="继续"];\n}`}
               />
             </div>
@@ -450,7 +450,7 @@ export default function SkillFlowStudio({
                     link.click();
                     URL.revokeObjectURL(url);
                   }}
-                  className="rounded-full border border-[#2563eb] bg-[#2563eb] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#1d4ed8] disabled:cursor-not-allowed disabled:border-[var(--line)] disabled:bg-[var(--line)]"
+                  className="rounded-full border border-[#b8860b] bg-[#b8860b] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#9a7209] disabled:cursor-not-allowed disabled:border-[var(--line)] disabled:bg-[var(--line)]"
                 >
                   下载 SVG
                 </button>

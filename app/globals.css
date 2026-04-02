@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
+  --background: #faf9f7;
   --background-soft: #ffffff;
-  --foreground: #334155;
-  --muted: #64748b;
-  --muted-strong: #475569;
-  --accent: #2563eb;
+  --foreground: #3c3836;
+  --muted: #8b7e6a;
+  --muted-strong: #5c5347;
+  --accent: #b8860b;
   --panel: rgba(255, 255, 255, 0.92);
   --panel-strong: rgba(255, 255, 255, 0.96);
   --preview: #ffffff;
-  --line: #e2e8f0;
-  --line-strong: #cbd5e1;
+  --line: #e8e4de;
+  --line-strong: #d4cfc7;
   --font-display: "Avenir Next", "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", sans-serif;
   --font-sans: "Avenir Next", "PingFang SC", "Hiragino Sans GB",
@@ -38,7 +38,7 @@ body {
 }
 
 ::selection {
-  background: rgba(37, 99, 235, 0.16);
+  background: rgba(184, 134, 11, 0.14);
 }
 
 .graphviz-stage svg {
@@ -50,7 +50,7 @@ body {
 }
 
 .graphviz-stage .node text {
-  fill: #1e293b;
+  fill: #3c3836;
   font-weight: 600;
   letter-spacing: 0.01em;
 }
@@ -59,7 +59,7 @@ body {
 .graphviz-stage .node path,
 .graphviz-stage .node ellipse,
 .graphviz-stage .node rect {
-  filter: drop-shadow(0 8px 18px rgba(15, 23, 42, 0.08));
+  filter: drop-shadow(0 8px 18px rgba(60, 56, 54, 0.08));
 }
 
 .graphviz-stage .edge path {
@@ -67,7 +67,7 @@ body {
 }
 
 .graphviz-stage .edge text {
-  fill: #dc2626;
+  fill: #a0522d;
   font-weight: 700;
   paint-order: stroke fill;
   stroke: #ffffff;

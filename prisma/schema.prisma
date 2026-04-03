@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum TodoStatus {
+  todo
+  in_progress
+  done
+}
+
+enum TodoPriority {
+  high
+  medium
+  low
+}
+
+enum TodoCategory {
+  development
+  product
+  design
+  operations
+}
+
+model Todo {
+  id        String       @id @default(cuid())
+  title     String
+  status    TodoStatus   @default(todo)
+  priority  TodoPriority
+  category  TodoCategory
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}

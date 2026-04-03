@@ -1,0 +1,186 @@
+<h2>待办页方向选择</h2>
+<p class="subtitle">
+  目标范围：单用户项目任务页，新增 <code>/todos</code>，顶部双导航切换“流程图页 / 待办页”，支持真实后端存储、创建任务、切换状态、优先级和固定分类筛选。
+</p>
+
+<div class="cards">
+  <div class="card" data-choice="console-list" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">方案 A · 控制台列表</div>
+        <div class="mockup-body" style="display:grid; gap:12px;">
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+            <div style="padding:10px; border:1px solid #d7cfbf; border-radius:12px; background:#fbf8f1;">
+              <div class="label">全部任务</div>
+              <div style="font-size:24px; font-weight:700;">18</div>
+            </div>
+            <div style="padding:10px; border:1px solid #d7cfbf; border-radius:12px; background:#f7f2e8;">
+              <div class="label">进行中</div>
+              <div style="font-size:24px; font-weight:700;">7</div>
+            </div>
+            <div style="padding:10px; border:1px solid #d7cfbf; border-radius:12px; background:#f3ede2;">
+              <div class="label">已完成</div>
+              <div style="font-size:24px; font-weight:700;">6</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <div class="mock-input" style="flex:1 1 180px;">搜索任务 / 标题</div>
+            <div class="mock-button">分类：开发</div>
+            <div class="mock-button">优先级：全部</div>
+            <div class="mock-button">+ 新建任务</div>
+          </div>
+          <div style="display:grid; gap:8px;">
+            <div style="display:grid; grid-template-columns:84px 1fr 78px 72px; gap:8px; align-items:center; padding:10px 12px; border:1px solid #ddd5c5; border-radius:12px; background:#fffdf8;">
+              <div class="label">待开始</div>
+              <div>整理 API 返回结构</div>
+              <div style="text-align:center; padding:4px 8px; border-radius:999px; background:#efe6d4;">高</div>
+              <div style="text-align:right; color:#7c6f60;">产品</div>
+            </div>
+            <div style="display:grid; grid-template-columns:84px 1fr 78px 72px; gap:8px; align-items:center; padding:10px 12px; border:1px solid #ddd5c5; border-radius:12px; background:#fffdf8;">
+              <div class="label">进行中</div>
+              <div>补齐单元测试</div>
+              <div style="text-align:center; padding:4px 8px; border-radius:999px; background:#f4d9bf;">中</div>
+              <div style="text-align:right; color:#7c6f60;">开发</div>
+            </div>
+            <div style="display:grid; grid-template-columns:84px 1fr 78px 72px; gap:8px; align-items:center; padding:10px 12px; border:1px solid #ddd5c5; border-radius:12px; background:#fffdf8;">
+              <div class="label">已完成</div>
+              <div>建立数据库表</div>
+              <div style="text-align:center; padding:4px 8px; border-radius:999px; background:#e5ebd8;">低</div>
+              <div style="text-align:right; color:#7c6f60;">基础设施</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>方案 A · 控制台列表</h3>
+      <p>推荐。顶部摘要配合筛选条，主体用高密度任务列表管理状态、优先级和分类，最适合你当前要的“项目任务页”。</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>优点</h4>
+          <ul>
+            <li>任务密度高，筛选和查看效率最好</li>
+            <li>第一版就能把管理感做出来</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>代价</h4>
+          <ul>
+            <li>视觉上偏管理后台，不像看板</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="split-workbench" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">方案 B · 双栏工作台</div>
+        <div class="mockup-body" style="display:grid; grid-template-columns:1.1fr 1.6fr; gap:10px;">
+          <div style="display:grid; gap:8px;">
+            <div style="padding:12px; border:1px solid #d8cfbf; border-radius:12px; background:#fbf7ef;">
+              <div class="label">快速新建</div>
+              <div class="mock-input">任务标题</div>
+              <div style="display:flex; gap:8px; margin-top:8px;">
+                <div class="mock-button">优先级</div>
+                <div class="mock-button">分类</div>
+              </div>
+            </div>
+            <div style="padding:12px; border:1px solid #d8cfbf; border-radius:12px; background:#fffdf8;">
+              <div class="label">筛选</div>
+              <div style="display:grid; gap:6px; margin-top:8px;">
+                <div class="mock-button">全部</div>
+                <div class="mock-button">开发</div>
+                <div class="mock-button">设计</div>
+                <div class="mock-button">运营</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:grid; gap:8px;">
+            <div style="padding:10px 12px; border:1px solid #ddd5c5; border-radius:12px; background:#fffdf8;">
+              <div class="label">待开始</div>
+              <div style="margin-top:6px;">输出接口字段文档</div>
+            </div>
+            <div style="padding:10px 12px; border:1px solid #ddd5c5; border-radius:12px; background:#fffdf8;">
+              <div class="label">进行中</div>
+              <div style="margin-top:6px;">梳理部署脚本</div>
+            </div>
+            <div style="padding:10px 12px; border:1px solid #ddd5c5; border-radius:12px; background:#fffdf8;">
+              <div class="label">已完成</div>
+              <div style="margin-top:6px;">补上 ESLint 配置</div>
+            </div>
+            <div style="padding:10px 12px; border:1px solid #ddd5c5; border-radius:12px; background:#fff9ef;">
+              <div class="label">任务详情</div>
+              <div style="margin-top:6px; color:#7c6f60;">点击左侧任务后在此查看和编辑状态、优先级、分类。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>方案 B · 双栏工作台</h3>
+      <p>左边负责创建和筛选，右边负责任务列表和详情。操作路径清晰，适合后面扩展更多字段。</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>优点</h4>
+          <ul>
+            <li>结构清晰，后续加字段不容易乱</li>
+            <li>新建任务体验更完整</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>代价</h4>
+          <ul>
+            <li>第一版信息密度不如列表高</li>
+            <li>页面布局更复杂</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="light-kanban" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">方案 C · 轻量看板</div>
+        <div class="mockup-body" style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+          <div style="padding:10px; border:1px solid #d9cfbf; border-radius:12px; background:#f9f6ef;">
+            <div class="label">待开始</div>
+            <div style="margin-top:8px; padding:10px; border-radius:10px; background:#fffdf8;">整理任务文案</div>
+            <div style="margin-top:8px; padding:10px; border-radius:10px; background:#fffdf8;">补 API 校验</div>
+          </div>
+          <div style="padding:10px; border:1px solid #d9cfbf; border-radius:12px; background:#f7f3ea;">
+            <div class="label">进行中</div>
+            <div style="margin-top:8px; padding:10px; border-radius:10px; background:#fffdf8;">实现表单提交</div>
+          </div>
+          <div style="padding:10px; border:1px solid #d9cfbf; border-radius:12px; background:#f4efe6;">
+            <div class="label">已完成</div>
+            <div style="margin-top:8px; padding:10px; border-radius:10px; background:#fffdf8;">创建数据表</div>
+            <div style="margin-top:8px; padding:10px; border-radius:10px; background:#fffdf8;">接入导航</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>方案 C · 轻量看板</h3>
+      <p>按状态分列展示，视觉最直观，也最容易感受到“项目进展”。</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>优点</h4>
+          <ul>
+            <li>状态切换直观，页面观感更轻松</li>
+            <li>视觉效果最容易做出差异化</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>代价</h4>
+          <ul>
+            <li>分类筛选和高密度管理较弱</li>
+            <li>第一版更像展示，不像管理台</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
